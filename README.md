@@ -1,70 +1,61 @@
-# Getting Started with Create React App
+# Mini TODO
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Simple and mini TODO app; intended to be used with a Raspberry Pi mini touch screen display. Built using [Create React App](https://create-react-app.dev/).
 
-## Available Scripts
+### Screenshots
 
-In the project directory, you can run:
+![General View](/demo_images/general_view.png)
+![Multi-Use Menu](/demo_images/multi-use_menu.png)
+![Adding Todos](/demo_images/adding_todos.png)
 
-### `npm start`
+### Dependencies
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+-   Supabase (see [Customization](#customization))
+-   Nano ID
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Initialization
 
-### `npm test`
+First, you'll need a Supabase account (or see [Customization](#customization) to use a different database). Then, after creating a project and a table for your todos, you'll need to create a `.env` text file in the root directory, containing this:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+REACT_APP_SUPABASE_URL=[Your Project URL]
+REACT_APP_SUPABASE_KEY=[Your Anon Key]
+REACT_APP_TABLE_NAME=[Your Todos Table Name]
+```
 
-### `npm run build`
+Then, install dependencies with:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Finally, start the app with:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+npm start
+```
 
-### `npm run eject`
+You can stop the app with `ctrl+c`. All subsequent restarts of the app will only require `npm start`.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Usage
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The UI is designed for a small landscape touch screen, but can still be used on any screen size. Tapping/clicking anywhere in a todo row checks/unchecks it. The right side contains the navigation arrows and the multi-use button.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### The Multi-Use Button (Dot Icon)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Pressing the multi-use button once checks/unchecks a todo. Holding it will bring up a menu with more options. Operations such as renaming or deleting will always be performed on the highlighted/selected todo, which can be changed via the arrow buttons.
 
-## Learn More
+### Console Functions
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Some more advanced operations are available (e.g. adding multiple todos, deleting completed todos, reordering todos, etc.), but have no GUI; they are placed in the browser `window` object and can be accessed via `window.appConsoleFuncs`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Customization
 
-### Code Splitting
+While the data component of this app is built using Supabase, you can alternatively implement your own API for a different database. The data CRUD logic is decoupled from all other logic in this app. Simply replace these files in `src/utils/`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+-   `addTodos.js`
+-   `deleteTodos.js`
+-   `fetchTodos.js`
+-   `updateTodos.js`
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+These files are required and referenced directly within `App.js`, but `getSupabase.js` can be deleted.
