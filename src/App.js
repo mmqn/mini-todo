@@ -68,7 +68,7 @@ function App() {
 	};
 
 	// Initialize
-	React.useEffect(fetchTodos, []);
+	React.useEffect(fetchTodos, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<>
@@ -81,6 +81,10 @@ function App() {
 			/>
 
 			{fetchError && <div className='error-overlay'>{fetchError}</div>}
+
+			{process.env.REACT_APP_KIOSK_MODE === 'true' && (
+				<style>{`* { cursor: none !important }`}</style>
+			)}
 		</>
 	);
 }

@@ -23,16 +23,16 @@ REACT_APP_SUPABASE_KEY=[Your Anon Key]
 REACT_APP_TABLE_NAME=[Your Todos Table Name]
 ```
 
-Then, install dependencies with:
+When using this app on a Raspberry Pi, you can add this to disable the cursor:
 
 ```
-npm install
+REACT_APP_KIOSK_MODE=true
 ```
 
-Finally, start the app with:
+Then, install dependencies and start the server with:
 
 ```
-npm start
+npm install & npm start
 ```
 
 You can stop the app with `ctrl+c`. All subsequent restarts of the app will only require `npm start`.
