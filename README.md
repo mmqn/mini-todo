@@ -5,8 +5,12 @@ Simple and mini TODO app; intended to be used with a Raspberry Pi mini touch scr
 ### Screenshots
 
 ![General View](/demo_images/general_view.png)
+
 ![Multi-Use Menu](/demo_images/multi-use_menu.png)
+
 ![Adding Todos](/demo_images/adding_todos.png)
+
+![Raspberry Pi](/demo_images/rapsberry_pi.jpeg)
 
 ### Dependencies
 
@@ -44,6 +48,10 @@ The UI is designed for a small landscape touch screen, but can still be used on 
 ### The Multi-Use Button (Dot Icon)
 
 Pressing the multi-use button once checks/unchecks a todo. Holding it will bring up a menu with more options. Operations such as renaming or deleting will always be performed on the highlighted/selected todo, which can be changed via the arrow buttons.
+
+### Renaming
+
+When renaming, press the Enter key to rename and the Escape key to cancel—for this reason, it is recommended that you use a keyboard with an Escape key when renaming.
 
 ### Console Functions
 

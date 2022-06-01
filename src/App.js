@@ -18,57 +18,64 @@ function App() {
 	let [todos, dispatchTodos] = React.useReducer(todosReducer, []);
 	let [fetchError, setFetchError] = React.useState('');
 
-	let handleError = error => {
-		console.error(error);
-		setFetchError(error.message);
-	};
+	React.useEffect(function initialize() {
+		console.log(
+			'%c-- Access console functions via window.appConsoleFuncs --',
+			'background: #333333; color: #cdff2b',
+		);
+		fetchTodos();
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// Directly handling todo write/update/delete operations to avoid lag when updating through API
+	React.useEffect(
+		function updateConsoleFuncs() {
+			window.appConsoleFuncs = getConsoleFuncs(todos, {
+				addTodos,
+				updateTodos,
+				deleteTodos,
+			});
+		},
+		[todos], // eslint-disable-line react-hooks/exhaustive-deps
+	);
+
+	function fetchTodos() {
+		apiFetchTodos()
+			.then(fetchedTodos => {
+				dispatchTodos({ type: 'Set Todos', fetchedTodos });
+			})
+			.catch(handleError);
+	}
+
+	// Directly handling todo write/update/delete operations to avoid lag when updating through DB API
 
 	/**
 	 * @param {Object[]} newTodos
 	 */
-	let addTodos = newTodos => {
+	function addTodos(newTodos) {
 		dispatchTodos({ type: 'Add Todos', newTodos });
 		apiAddTodos(newTodos).then(fetchTodos).catch(handleError);
-	};
+	}
 
 	/**
 	 * @param {Object[]} todoUpdates: Each update object must contain the ID
 	 * and only the changed fields.
 	 */
-	let updateTodos = todoUpdates => {
+	function updateTodos(todoUpdates) {
 		dispatchTodos({ type: 'Update Todos', todoUpdates });
 		apiUpdateTodos(todoUpdates).catch(handleError);
-	};
+	}
 
 	/**
 	 * @param {Object[]} todoIds
 	 */
-	let deleteTodos = todoIds => {
+	function deleteTodos(todoIds) {
 		dispatchTodos({ type: 'Delete Todos', todoIds });
 		apiDeleteTodo(todoIds).catch(handleError);
-	};
+	}
 
-	let fetchTodos = () => {
-		apiFetchTodos()
-			.then(fetchedTodos => {
-				console.log(
-					'%c-- Access console functions via window.appConsoleFuncs --',
-					'background: #333333; color: #cdff2b',
-				);
-				window.appConsoleFuncs = getConsoleFuncs(fetchedTodos, {
-					addTodos,
-					updateTodos,
-					deleteTodos,
-				});
-				dispatchTodos({ type: 'Set Todos', fetchedTodos });
-			})
-			.catch(handleError);
-	};
-
-	// Initialize
-	React.useEffect(fetchTodos, []); // eslint-disable-line react-hooks/exhaustive-deps
+	function handleError(error) {
+		console.error(error);
+		setFetchError(error.message);
+	}
 
 	return (
 		<>
@@ -142,10 +149,10 @@ function todosReducer(state, action) {
 
 function getConsoleFuncs(todos, { addTodos, updateTodos, deleteTodos }) {
 	return {
-		viewTodos: () => {
+		viewTodos() {
 			console.table(todos);
 		},
-		addMultipleTodos: newTodosStringArray => {
+		addMultipleTodos(newTodosStringArray) {
 			let lastTodoOrderNumber = todos.at(-1).orderNumber;
 
 			let newTodos = newTodosStringArray.map((todo, index) => ({
@@ -156,7 +163,7 @@ function getConsoleFuncs(todos, { addTodos, updateTodos, deleteTodos }) {
 
 			addTodos(newTodos);
 		},
-		deleteCompletedTodos: () => {
+		deleteCompletedTodos() {
 			let completedTodoIds = getCompletedTodos(todos);
 
 			if (completedTodoIds.length > 0) {
@@ -165,7 +172,7 @@ function getConsoleFuncs(todos, { addTodos, updateTodos, deleteTodos }) {
 				console.warn('No completed todos found.');
 			}
 		},
-		reorder: (oldOrderNumber, newOrderNumber) => {
+		reorder(oldOrderNumber, newOrderNumber) {
 			let newTodos = [...todos];
 
 			// Get todo at given order number
@@ -181,7 +188,7 @@ function getConsoleFuncs(todos, { addTodos, updateTodos, deleteTodos }) {
 				console.warn('No todo found at given order number.');
 			}
 		},
-		resetOrderNumbers: () => {
+		resetOrderNumbers() {
 			let reorderedTodos = resetOrderNumbers(todos);
 			updateTodos(reorderedTodos);
 		},

@@ -13,19 +13,19 @@ function NavigationButtons({
 	let timeout = React.useRef(null);
 	let didMultiUseMenuOpen = React.useRef(false);
 
-	let handleMenuBtnMouseDown = () => {
+	function handleMenuBtnMouseDown() {
 		timeout.current = setTimeout(() => {
 			openMultiUseMenu();
 			didMultiUseMenuOpen.current = true;
 		}, MENU_BTN_TIMEOUT);
-	};
+	}
 
-	let handleMenuBtnMouseUp = () => {
+	function handleMenuBtnMouseUp() {
 		clearTimeout(timeout.current);
 
 		if (!didMultiUseMenuOpen.current) toggleSelectedTodo();
 		didMultiUseMenuOpen.current = false;
-	};
+	}
 
 	return (
 		<div className='navigation-buttons'>

@@ -1,31 +1,19 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function TodoEditor({
-	mode,
-	initialTitle,
-	renameTodo,
-	addTodo,
-	setIsRenaming,
-	setIsTodoAdderOpen,
-}) {
+function TodoEditor({ mode, initialTitle, renameTodo, addTodo, cancel }) {
 	let inputRef = React.useRef(null);
 
 	React.useEffect(() => {
 		inputRef.current?.focus();
 	}, []);
 
-	let handleEditChange = event => {
-		if (event.key === 'Enter') renameTodo(event.target.value);
-		else if (event.key === 'Escape') setIsRenaming(false);
-	};
+	let enterFunc = mode === 'edit' ? renameTodo : addTodo;
 
-	let handleAddChange = event => {
-		if (event.key === 'Enter') addTodo(event.target.value);
-		else if (event.key === 'Escape') setIsTodoAdderOpen(false);
-	};
-
-	let handleKeyDown = mode === 'edit' ? handleEditChange : handleAddChange;
+	function handleInputKeyDown(event) {
+		if (event.key === 'Enter') enterFunc(event.target.value);
+		else if (event.key === 'Escape') cancel();
+	}
 
 	return (
 		<input
@@ -33,18 +21,17 @@ function TodoEditor({
 			type='text'
 			placeholder='Task'
 			defaultValue={initialTitle}
-			onKeyDown={handleKeyDown}
+			onKeyDown={handleInputKeyDown}
 		/>
 	);
 }
 
 TodoEditor.propTypes = {
-	mode: PropTypes.oneOf(['edit', 'add']),
+	mode: PropTypes.oneOf(['edit', 'add']).isRequired,
 	initialTitle: PropTypes.string,
 	renameTodo: PropTypes.func,
 	addTodo: PropTypes.func,
-	setIsRenaming: PropTypes.func,
-	setIsTodoAdderOpen: PropTypes.func,
+	cancel: PropTypes.func.isRequired,
 };
 
 export default TodoEditor;

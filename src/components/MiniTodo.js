@@ -19,7 +19,7 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 	let todosRef = React.useRef(null);
 
 	// Selected todo is determined by traversing up and down through the todos list
-	let changeSelectedTodo = direction => {
+	function changeSelectedTodo(direction) {
 		if (direction === 'up') {
 			setSelectedTodoIndex(prevState => {
 				let newIndex = prevState - 1;
@@ -33,26 +33,26 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 				return newIndex;
 			});
 		}
-	};
+	}
 
-	let toggleTargetTodo = todo => {
+	function toggleTargetTodo(todo) {
 		updateTodos([{ id: todo.id, isComplete: !todo.isComplete }]);
-	};
+	}
 
-	let toggleSelectedTodo = () => {
+	function toggleSelectedTodo() {
 		let targetTodo = todos[selectedTodoIndex];
 		updateTodos([
 			{ id: targetTodo.id, isComplete: !targetTodo.isComplete },
 		]);
-	};
+	}
 
-	let renameTodo = newTitle => {
+	function renameTodo(newTitle) {
 		let targetTodo = todos[selectedTodoIndex];
 		updateTodos([{ id: targetTodo.id, title: newTitle }]);
 		setIsRenaming(false);
-	};
+	}
 
-	let addTodo = title => {
+	function addTodo(title) {
 		let isFirstTodo = todos.length === 0;
 
 		let newOrderNumber = isFirstTodo
@@ -75,9 +75,9 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 
 		setIsTodoAdderOpen(false);
 		setSelectedTodoIndex(prevState => (isFirstTodo ? 0 : prevState + 1));
-	};
+	}
 
-	let deleteTodo = () => {
+	function deleteTodo() {
 		let targetTodo = todos[selectedTodoIndex];
 
 		deleteTodos([targetTodo.id]);
@@ -92,19 +92,28 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 		setSelectedTodoIndex(prevState =>
 			selectedTodoIndex === todos.length - 1 ? prevState - 1 : prevState,
 		);
-	};
+	}
 
-	let scrollTodos = top => {
+	function scrollTodos(top) {
 		todosRef.current.scrollTo({ top });
-	};
+	}
 
-	let openMultiUseMenu = () => {
+	function openMultiUseMenu() {
 		setIsMultiUseMenuOpen(true);
-	};
+	}
 
 	return (
 		<div className='app'>
-			<div ref={todosRef} className='todos'>
+			<div
+				ref={todosRef}
+				className={[
+					'todos',
+					process.env.REACT_APP_KIOSK_MODE === 'true' &&
+						'hide-scrollbar',
+				]
+					.filter(Boolean)
+					.join(' ')}
+			>
 				{todos.map((todo, index) => (
 					<TodoItem
 						key={todo.id}
@@ -125,8 +134,9 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 
 				{todos.length === 0 && isTodoAdderOpen && (
 					<TodoEditor
+						mode='add'
 						addTodo={addTodo}
-						setIsTodoAdderOpen={setIsTodoAdderOpen}
+						cancel={() => setIsTodoAdderOpen(false)}
 					/>
 				)}
 

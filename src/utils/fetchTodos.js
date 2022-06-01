@@ -8,7 +8,8 @@ const fetchTodos = () =>
 			let { data: todos, error } = await supabase
 				.from(supabaseTableName)
 				.select('*')
-				.order('orderNumber', { ascending: true });
+				.order('isComplete', { ascending: true })
+				.order('orderNumber', { ascending: true })
 
 			if (error) reject(error);
 

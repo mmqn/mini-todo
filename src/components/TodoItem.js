@@ -58,14 +58,14 @@ function TodoItem({
 						{todo.isComplete && checkmarkIcon}
 					</div>
 
-					<h5>{todo.title}</h5>
+					<h4>{todo.title}</h4>
 				</button>
 			) : (
 				<TodoEditor
 					mode='edit'
 					initialTitle={todo.title}
 					renameTodo={renameTodo}
-					setIsRenaming={setIsRenaming}
+					cancel={() => setIsRenaming(false)}
 				/>
 			)}
 
@@ -73,7 +73,7 @@ function TodoItem({
 				<TodoEditor
 					mode='add'
 					addTodo={addTodo}
-					setIsTodoAdderOpen={setIsTodoAdderOpen}
+					cancel={() => setIsTodoAdderOpen(false)}
 				/>
 			)}
 		</>

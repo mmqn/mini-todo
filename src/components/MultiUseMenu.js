@@ -11,37 +11,37 @@ function MultiUseMenu({
 	let [showDeleteConfirmation, setShowDeleteConfirmation] =
 		React.useState(false);
 
-	let handleActionPreflight = event => {
+	function handleActionPreflight(event) {
 		let action = event.target.innerText;
 
 		let actions = {
-			Add: () => {
+			Add() {
 				mountTodoAdder();
 				closeMultiUseMenu();
 			},
-			Delete: () => {
+			Delete() {
 				setShowDeleteConfirmation(true);
 			},
-			Rename: () => {
+			Rename() {
 				setIsRenaming(true);
 				closeMultiUseMenu();
 			},
-			Refetch: () => {
+			Refetch() {
 				refetchTodos();
 				closeMultiUseMenu();
 			},
-			Cancel: () => {
+			Cancel() {
 				closeMultiUseMenu();
 			},
 		};
 
 		actions[action]();
-	};
+	}
 
-	let handleConfirmDeleteTodo = () => {
+	function handleConfirmDeleteTodo() {
 		deleteTodo();
 		closeMultiUseMenu();
-	};
+	}
 
 	return (
 		<div className='multi-use-menu'>
