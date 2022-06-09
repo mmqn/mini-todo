@@ -53,6 +53,10 @@ input[type='text'] {
 	transition: background-color 150ms ease-out;
 }
 
+.todo h4 {
+	padding-right: 15px;
+}
+
 .todo:hover {
 	background-color: rgb(233, 242, 255);
 }
