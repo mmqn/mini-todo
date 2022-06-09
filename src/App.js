@@ -7,7 +7,7 @@ import apiAddTodos from './utils/addTodos';
 import apiUpdateTodos from './utils/updateTodos';
 import apiDeleteTodo from './utils/deleteTodo';
 import {
-	sortByOrderNumber,
+	sortTodos,
 	resetOrderNumbers,
 	getCompletedTodos,
 } from './utils/todoOps';
@@ -127,7 +127,7 @@ function todosReducer(state, action) {
 				}
 			});
 
-			return sortByOrderNumber(newTodos);
+			return sortTodos(newTodos);
 		}
 		case 'Delete Todos': {
 			let newTodos = [...state];

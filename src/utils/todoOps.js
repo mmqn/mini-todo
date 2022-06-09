@@ -2,8 +2,18 @@
  * @param {Object[]} todos
  * @returns {Object[]}: Full todo objects sorted by order numbers.
  */
-export function sortByOrderNumber(todos) {
-	return todos.sort((a, b) => a.orderNumber - b.orderNumber);
+export function sortTodos(todos) {
+	let uncompletedTodos = todos
+		.filter(todo => !todo.isComplete)
+		.sort(sortByOrderNumber);
+	let completedTodos = todos
+		.filter(todo => todo.isComplete)
+		.sort(sortByOrderNumber);
+	return uncompletedTodos.concat(completedTodos);
+}
+
+function sortByOrderNumber(a, b) {
+	return a.orderNumber - b.orderNumber;
 }
 
 /**

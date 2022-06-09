@@ -11,8 +11,9 @@ function TodoEditor({ mode, initialTitle, renameTodo, addTodo, cancel }) {
 	let enterFunc = mode === 'edit' ? renameTodo : addTodo;
 
 	function handleInputKeyDown(event) {
+		console.log(event.key);
 		if (event.key === 'Enter') enterFunc(event.target.value);
-		else if (event.key === 'Escape') cancel();
+		else if (event.key === 'Escape' || event.key === '`') cancel();
 	}
 
 	return (
