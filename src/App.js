@@ -16,6 +16,7 @@ import MiniTodo from './components/MiniTodo';
 
 function App() {
 	let [todos, dispatchTodos] = React.useReducer(todosReducer, []);
+	let [isLocked, seIsLocked] = React.useState(false);
 	let [fetchError, setFetchError] = React.useState('');
 
 	React.useEffect(function initialize() {
@@ -38,9 +39,11 @@ function App() {
 	);
 
 	function fetchTodos() {
+		seIsLocked(true);
 		apiFetchTodos()
 			.then(fetchedTodos => {
 				dispatchTodos({ type: 'Set Todos', fetchedTodos });
+				seIsLocked(false);
 			})
 			.catch(handleError);
 	}
@@ -52,7 +55,9 @@ function App() {
 	 */
 	function addTodos(newTodos) {
 		dispatchTodos({ type: 'Add Todos', newTodos });
-		apiAddTodos(newTodos).then(fetchTodos).catch(handleError);
+		apiAddTodos(newTodos)
+			.then(fetchTodos)
+			.catch(handleError);
 	}
 
 	/**
@@ -85,13 +90,15 @@ function App() {
 				addTodos={addTodos}
 				updateTodos={updateTodos}
 				deleteTodos={deleteTodos}
+				isLocked={isLocked}
 			/>
 
 			{fetchError && <div className='error-overlay'>{fetchError}</div>}
 
-			{process.env.REACT_APP_KIOSK_MODE === 'true' && (
-				<style>{`* { cursor: none !important }`}</style>
-			)}
+			{process.env.REACT_APP_KIOSK_MODE === 'true' &&
+				window.innerWidth <= 480 && (
+					<style>{`* { cursor: none !important }`}</style>
+				)}
 		</>
 	);
 }

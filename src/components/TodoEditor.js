@@ -5,13 +5,12 @@ function TodoEditor({ mode, initialTitle, renameTodo, addTodo, cancel }) {
 	let inputRef = React.useRef(null);
 
 	React.useEffect(() => {
-		inputRef.current?.focus();
-	}, []);
+		if (inputRef.current) inputRef.current.focus();
+	}, [inputRef.current]);
 
 	let enterFunc = mode === 'edit' ? renameTodo : addTodo;
 
 	function handleInputKeyDown(event) {
-		console.log(event.key);
 		if (event.key === 'Enter') enterFunc(event.target.value);
 		else if (event.key === 'Escape' || event.key === '`') cancel();
 	}

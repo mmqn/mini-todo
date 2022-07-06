@@ -21,7 +21,7 @@ function TodoItem({
 	let todoRef = React.useRef(null);
 
 	React.useEffect(() => {
-		if (isSelected && !isRenaming) {
+		if (todoRef.current && isSelected && !isRenaming) {
 			let elRect = todoRef.current.getBoundingClientRect();
 
 			// Bottom out of bounds

@@ -10,7 +10,15 @@ import NavigationButtons from './NavigationButtons';
 import MultiUseMenu from './MultiUseMenu';
 import { journalIcon } from '../styles/icons';
 
-function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
+function MiniTodo({
+	todos,
+	fetchTodos,
+	addTodos,
+	updateTodos,
+	deleteTodos,
+	isLocked,
+}) {
+	// Sets highlighted/selected todo
 	let [selectedTodoIndex, setSelectedTodoIndex] = React.useState(0);
 	let [isMultiUseMenuOpen, setIsMultiUseMenuOpen] = React.useState(false);
 	let [isRenaming, setIsRenaming] = React.useState(false);
@@ -18,32 +26,39 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 
 	let todosRef = React.useRef(null);
 
-	// Selected todo is determined by traversing up and down through the todos list
+	// Highlighted/selected todo is determined by traversing up and down through the todos list
 	function changeSelectedTodo(direction) {
 		if (direction === 'up') {
 			setSelectedTodoIndex(prevState => {
 				let newIndex = prevState - 1;
-				if (newIndex < 0) return prevState;
+				// If at top and going up, loop to bottom of list
+				if (newIndex < 0) return todos.length - 1;
 				return newIndex;
 			});
 		} else if (direction === 'down') {
 			setSelectedTodoIndex(prevState => {
 				let newIndex = prevState + 1;
-				if (newIndex > todos.length - 1) return prevState;
+				// If at bottom and going down, loop to top of list
+				if (newIndex > todos.length - 1) return 0;
 				return newIndex;
 			});
 		}
 	}
 
-	function toggleTargetTodo(todo) {
-		updateTodos([{ id: todo.id, isComplete: !todo.isComplete }]);
+	// Toggle highlighted/selected todo
+	function toggleSelectedTodo() {
+		if (!isLocked) {
+			let targetTodo = todos[selectedTodoIndex];
+			updateTodos([
+				{ id: targetTodo.id, isComplete: !targetTodo.isComplete },
+			]);
+		}
 	}
 
-	function toggleSelectedTodo() {
-		let targetTodo = todos[selectedTodoIndex];
-		updateTodos([
-			{ id: targetTodo.id, isComplete: !targetTodo.isComplete },
-		]);
+	function toggleTargetTodo(todo) {
+		if (!isLocked) {
+			updateTodos([{ id: todo.id, isComplete: !todo.isComplete }]);
+		}
 	}
 
 	function renameTodo(newTitle) {
@@ -95,7 +110,7 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 	}
 
 	function scrollTodos(top) {
-		todosRef.current.scrollTo({ top });
+		if (todosRef.current) todosRef.current.scrollTo({ top });
 	}
 
 	function openMultiUseMenu() {
@@ -143,19 +158,20 @@ function MiniTodo({ todos, fetchTodos, addTodos, updateTodos, deleteTodos }) {
 				{todos.length === 0 && !isTodoAdderOpen && journalIcon}
 			</div>
 
-			{!isMultiUseMenuOpen ? (
-				<NavigationButtons
-					changeSelectedTodo={changeSelectedTodo}
-					toggleSelectedTodo={toggleSelectedTodo}
-					openMultiUseMenu={openMultiUseMenu}
-				/>
-			) : (
+			{isMultiUseMenuOpen && !isLocked ? (
 				<MultiUseMenu
 					mountTodoAdder={() => setIsTodoAdderOpen(true)}
 					deleteTodo={deleteTodo}
 					setIsRenaming={setIsRenaming}
 					refetchTodos={fetchTodos}
 					closeMultiUseMenu={() => setIsMultiUseMenuOpen(false)}
+				/>
+			) : (
+				<NavigationButtons
+					changeSelectedTodo={changeSelectedTodo}
+					toggleSelectedTodo={toggleSelectedTodo}
+					openMultiUseMenu={openMultiUseMenu}
+					isLocked={isLocked}
 				/>
 			)}
 		</div>
@@ -168,6 +184,7 @@ MiniTodo.propTypes = {
 	addTodos: PropTypes.func.isRequired,
 	updateTodos: PropTypes.func.isRequired,
 	deleteTodos: PropTypes.func.isRequired,
+	isLocked: PropTypes.bool.isRequired,
 };
 
 export default MiniTodo;
